@@ -36,8 +36,10 @@ public class Lambda {
 
     public static int sumAllEven(List<Integer> numbers) {
         int total = 0;
+
         for (int number : numbers) {
-            if (number % 2 == 0) {
+            MoveStrategy move = () -> number % 2 == 0;
+            if (move.isMovable()) {
                 total += number;
             }
         }
@@ -47,7 +49,8 @@ public class Lambda {
     public static int sumAllOverThree(List<Integer> numbers) {
         int total = 0;
         for (int number : numbers) {
-            if (number > 3) {
+            MoveStrategy move = () -> number > 3;
+            if (move.isMovable()) {
                 total += number;
             }
         }
