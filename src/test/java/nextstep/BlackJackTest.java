@@ -272,6 +272,46 @@ public class BlackJackTest {
         );
     }
 
+    @DisplayName("모든 플레이어가 버스트가 발생한 경우 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
+    @Test
+    public void burstLoseTest() {
+        List<Player> expectedWin = new ArrayList<>();
+        List<Player> expectedLose = new ArrayList<>();
+
+        Dealer dealer = new Dealer();
+        List<Card> cardListD = new ArrayList<>();
+        cardListD.add(new Card(Suit.SPADE, Rank.NINE));
+        cardListD.add(new Card(Suit.SPADE, Rank.TEN));
+        cardListD.add(new Card(Suit.DIAMOND, Rank.QUEEN));
+        dealer.addCard(cardListD);
+
+        Player player1 = new Player("배정환", 40000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(new Card(Suit.HEART, Rank.NINE));
+        cardList1.add(new Card(Suit.SPADE, Rank.JACK));
+        cardList1.add(new Card(Suit.CLOVER, Rank.TEN));
+        player1.addCard(cardList1);
+
+        Player player2 = new Player("apple", 20000);
+        List<Card> cardList2 = new ArrayList<>();
+        cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
+        cardList2.add(new Card(Suit.SPADE, Rank.QUEEN));
+        cardList2.add(new Card(Suit.HEART, Rank.KING));
+        player2.addCard(cardList2);
+
+        playerList.add(player1);
+        playerList.add(player2);
+        expectedLose.add(player1);
+        expectedLose.add(player2);
+
+        Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
+
+        assertAll(
+                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
+                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
+        );
+    }
+
     @DisplayName("블랙잭이 발생한 경우 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
     @Test
     public void blackJackWinTest() {
