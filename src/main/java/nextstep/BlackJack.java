@@ -1,98 +1,121 @@
 package nextstep;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BlackJack {
-    Players players = new Players();
-    Dealer dealer = new Dealer();
-    Cards cards = new Cards();
-    List<Player> playerList = players.getPlayerList();
-    double recoverySum = 0;
+    private final Gamers gamers = new Gamers();
+    private final Cards cards = new Cards();
+    private final Dealer dealer = gamers.getDealer();
+    private final List<Gamer> gamerList = gamers.getGamerList();
+    private final int LOSE_CONST = -1;
 
     public void run() {
-        ready();
-        init();
-        control();
-        checkSum();
-        result();
+        ready(gamers);
+        init(gamers, gamerList);
+        controlPlayer(gamers.getPlayerList());
+        controlDealer(dealer);
+        checkSum(gamerList);
+        result(gamers.getPlayerList(), dealer);
     }
 
-    public void ready() {
+    public void ready(Gamers gamers) {
         List<String> name = InputView.inputName();
+        gamers.addDealer();
         for (String string : name) {
             int money = InputView.inputMoney(string);
-            players.addPlayer(name, money);
+            gamers.addPlayer(string, money);
+        }
+        gamers.setPlayer();
+    }
+
+    public void init(Gamers gamers, List<Gamer> gamerList) {
+        List<String> names = gamers.getPlayerName();
+        ResultView.printInitInfo(names);
+        for (Gamer gamer : gamerList) {
+            drawCard(gamer, 2);
+            viewCardInit(gamer);
+            gamer.checkBlackJack();
         }
     }
 
-    public void init() {
-        List<String> names = players.getPlayerName();
-        OutputView.printInitInfo(names);
-        drawCardDealer(dealer, 2);
-        dealer.checkBlackJack();
+    public void controlPlayer(List<Player> playerList) {
         for (Player player : playerList) {
-            drawCard(player, 2);
-            player.checkBlackJack();
+            playerTurn(player);
         }
     }
 
-    public void control() {
+    public void controlDealer(Dealer dealer) {
         int drawCount = 0;
-        for (Player player : playerList) {
-            if(InputView.selectAddCard(player.getName())) drawCard(player, 1);
-        }
-        while(dealer.sumScore() <= 16) {
-            drawCardDealer(dealer, 1);
+        while(dealer.extraDraw()) {
+            drawCard(dealer, 1);
             drawCount++;
         }
-        OutputView.printDrawInfo(drawCount);
+        ResultView.printDrawInfo(drawCount);
     }
 
-    public void checkSum() { // 딜러도 추가해야하나 ㅅㅂ
-        List<String> cardStringDealer = dealer.printCard();
-        OutputView.printDealerSum(cardStringDealer, dealer.sumScore());
-        recoverySum += dealer.checkBust();
-        for (Player player : playerList) {
-            List<String> cardString = player.printCard();
-            OutputView.printMySum(player.getName(), cardString, player.sumScore());
-            recoverySum += player.checkBust();
+    public void checkSum(List<Gamer> gamerList) {
+        for (Gamer gamer : gamerList) {
+            List<String> cardString = gamer.printCard();
+            ResultView.printSum(gamer.getName(), cardString, gamer.sumScore());
         }
     }
 
-    public void result() { // 딜러 반영 안됨 수정 필요
-        List<Player> gains = playerList.stream().filter(Player::isBust).collect(Collectors.toList());
-        int size = gains.size();
-        if(!dealer.isBust()) size++;
-        double dividends = recoverySum / size;
-        if(dealer.isBust()) OutputView.printDealerResult(dividends);
-        if(!dealer.isBust()) OutputView.printDealerResult(dealer.checkBust() * -1);
-        for(Player player : playerList) {
-            if(!player.isBust()) {
-                player.addMoney(dividends);
-                OutputView.printMyResult(dividends);
-            }
-            if(player.isBust()) OutputView.printMyResult(player.checkBust() * -1);
-        }
+    public Map<String, List<Player>> checkWinner(List<Player> playerList, Dealer dealer) {
+        return playerList.stream()
+                .collect(Collectors.groupingBy(player -> {
+                    if (player.isBust()) return "LOSE";
+                    if (dealer.isBust()) return "WIN";
+                    if (player.sumScore() > dealer.sumScore() || player.isBlackJack()) return "WIN";
+                    if (player.sumScore() < dealer.sumScore() || dealer.isBlackJack()) return "LOSE";
+                    return "PUSH";
+                }));
     }
 
-    public void drawCard(Player player, int number) {
-        Card card;
-        for (int i = 0; i < number; i++) {
-            card = cards.draw();
-            player.addCard(card);
-        }
-        List<String> cardString = player.printCard();
-        OutputView.printMyCard(player.getName(), cardString);
+    public void result(List<Player> playerList, Dealer dealer) {
+        Map<String, List<Player>> result = checkWinner(playerList, dealer);
+        List<Player> winners = result.get("WIN");
+        List<Player> pushers = result.getOrDefault("PUSH", List.of());
+        List<Player> losers = result.get("LOSE");
+        double moneySum = checkAmount(winners, losers);
+        organizeResult(dealer, winners, pushers, losers, moneySum);
     }
 
-    public void drawCardDealer(Dealer dealer, int number) {
-        Card card;
-        for (int i = 0; i < number; i++) {
-            card = cards.draw();
-            dealer.addCard(card);
+    public double checkAmount(List<Player> winners, List<Player> losers) {
+        double moneySum = 0;
+        for (Player winner : winners) moneySum -= winner.getAmount();
+        for (Player loser : losers) moneySum += loser.getAmount();
+        return moneySum;
+    }
+
+    public void organizeResult(Dealer dealer, List<Player> winners, List<Player> pushers, List<Player> losers, double moneySum) {
+        ResultView.printResult(dealer.getName(), moneySum);
+        for (Player winner : winners) ResultView.printResult(winner.getName(), winner.getAmount());
+        for (Player pusher : pushers) ResultView.printResult(pusher.getName(), 0);
+        for (Player loser : losers) ResultView.printResult(loser.getName(), loser.getAmount() * LOSE_CONST);
+    }
+
+    public void drawCard(Gamer gamer, int number) {
+        List<Card> cardList;
+        cardList = cards.draw(number);
+        gamer.addCard(cardList);
+    }
+
+    private void viewCardInit(Gamer gamer) {
+        List<String> cardString = gamer.printCardInit();
+        ResultView.printCard(gamer.getName(), cardString);
+    }
+
+    private void viewCard(Gamer gamer) {
+        List<String> cardString = gamer.printCard();
+        ResultView.printCard(gamer.getName(), cardString);
+    }
+
+    private void playerTurn(Gamer player) {
+        while (!player.isStay() && InputView.selectAddCard(player.getName())) {
+            drawCard(player, 1);
+            viewCard(player);
         }
-        List<String> cardString = dealer.printCard();
-        OutputView.printDealerCard(cardString);
     }
 }

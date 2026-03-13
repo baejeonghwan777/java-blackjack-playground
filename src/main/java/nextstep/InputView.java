@@ -30,7 +30,7 @@ public class InputView {
                 System.out.println("올바른 숫자를 입력하세요.");
                 scanner.nextLine();
             }
-        } while (money <= 0);
+        } while (money < 0);
         return money;
     }
 
@@ -38,9 +38,6 @@ public class InputView {
         List<String> name;
         try {
             name = Arrays.asList(names.split(","));
-            for (String string : name) {
-                if(string.equalsIgnoreCase("dealer")) return new ArrayList<>();
-            }
         } catch (PatternSyntaxException e) {
             return new ArrayList<>();
         }

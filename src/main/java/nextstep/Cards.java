@@ -16,8 +16,12 @@ public class Cards {
         Collections.shuffle(cardList);
     }
 
-    public Card draw() {
-        if(cardList.isEmpty()) return null;
-        return cardList.remove(0);
+    public List<Card> draw(int number) {
+        List<Card> drawCard = new ArrayList<>();
+        for (int i = 0; i < number; i++) {
+            if(cardList.isEmpty()) break;
+            drawCard.add(cardList.remove(0));
+        }
+        return drawCard;
     }
 }
