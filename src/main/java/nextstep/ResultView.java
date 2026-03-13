@@ -3,7 +3,6 @@ package nextstep;
 import java.util.List;
 
 public class ResultView {
-
     public static void printInitInfo(List<String> names) {
         String name = String.join(", ", names);
         System.out.println("딜러와 " + name + "에게 2장을 나눕니다.");

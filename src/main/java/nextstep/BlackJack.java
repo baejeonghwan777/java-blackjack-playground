@@ -7,17 +7,14 @@ import java.util.stream.Collectors;
 public class BlackJack {
     private final Gamers gamers = new Gamers();
     private final Cards cards = new Cards();
-    private final Dealer dealer = gamers.getDealer();
-    private final List<Gamer> gamerList = gamers.getGamerList();
-    private final int LOSE_CONST = -1;
 
     public void run() {
         ready(gamers);
-        init(gamers, gamerList);
+        init(gamers, gamers.getGamerList());
         controlPlayer(gamers.getPlayerList());
-        controlDealer(dealer);
-        checkSum(gamerList);
-        result(gamers.getPlayerList(), dealer);
+        controlDealer(gamers.getDealer());
+        checkSum(gamers.getGamerList());
+        result(gamers.getPlayerList(), gamers.getDealer());
     }
 
     public void ready(Gamers gamers) {
@@ -75,9 +72,9 @@ public class BlackJack {
 
     public void result(List<Player> playerList, Dealer dealer) {
         Map<String, List<Player>> result = checkWinner(playerList, dealer);
-        List<Player> winners = result.get("WIN");
+        List<Player> winners = result.getOrDefault("WIN", List.of());
         List<Player> pushers = result.getOrDefault("PUSH", List.of());
-        List<Player> losers = result.get("LOSE");
+        List<Player> losers = result.getOrDefault("LOSE", List.of());
         double moneySum = checkAmount(winners, losers);
         organizeResult(dealer, winners, pushers, losers, moneySum);
     }
@@ -90,6 +87,7 @@ public class BlackJack {
     }
 
     public void organizeResult(Dealer dealer, List<Player> winners, List<Player> pushers, List<Player> losers, double moneySum) {
+        final int LOSE_CONST = -1;
         ResultView.printResult(dealer.getName(), moneySum);
         for (Player winner : winners) ResultView.printResult(winner.getName(), winner.getAmount());
         for (Player pusher : pushers) ResultView.printResult(pusher.getName(), 0);

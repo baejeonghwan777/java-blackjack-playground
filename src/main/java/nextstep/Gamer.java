@@ -45,8 +45,7 @@ public abstract class Gamer {
     }
 
     public int sumScore() {
-        int sum = 0;
-        int aceCount = 0;
+        int sum = 0, aceCount = 0;
         for (Card card : cardList) {
             sum += card.getScore();
             if(card.isAce()) aceCount++;

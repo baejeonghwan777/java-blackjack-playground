@@ -226,9 +226,9 @@ public class BlackJackTest {
         Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.get("WIN")).isEqualTo(expectedWin),
+                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
                 () -> assertThat(result.getOrDefault("PUSH", List.of())).isEqualTo(expectedPush),
-                () -> assertThat(result.get("LOSE")).isEqualTo(expectedLose)
+                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
         );
     }
 
@@ -267,8 +267,8 @@ public class BlackJackTest {
         Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.get("WIN")).isEqualTo(expectedWin),
-                () -> assertThat(result.get("LOSE")).isEqualTo(expectedLose)
+                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
+                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
         );
     }
 
@@ -306,8 +306,8 @@ public class BlackJackTest {
         Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.get("WIN")).isEqualTo(expectedWin),
-                () -> assertThat(result.get("LOSE")).isEqualTo(expectedLose)
+                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
+                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
         );
     }
 
