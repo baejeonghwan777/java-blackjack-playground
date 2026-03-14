@@ -1,60 +1,34 @@
 package nextstep;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class Gamer {
     protected double betAmount;
-    protected List<Card> cardList = new ArrayList<>();
+    protected State state = new Started(new Cards());
 
     abstract public String getName();
 
-    abstract public List<String> printCardInit();
+    abstract public List<String> getCardNameInit();
 
     public void addCard(List<Card> card) {
-        cardList.addAll(card);
+        this.state = state.draw(card);
     }
 
-    public List<String> printCard() {
-        List<String> cardString = new ArrayList<>();
-        for (Card card : cardList) {
-            cardString.add(card.toString());
-        }
-        return cardString;
-    }
-
-    public double getAmount() {
-        return betAmount;
-    }
-
-    public void checkBlackJack() {
-        if(isBlackJack()) betAmount = betAmount * 1.5;
-    }
-
-    public boolean isBlackJack() {
-        return cardList.size() == 2 && sumScore() == 21;
+    public List<String> getCardName() {
+        return state.getCardName();
     }
 
     public boolean isBust() {
-        return sumScore() > 21;
+        return state instanceof Bust;
     }
 
-    public boolean isStay() {
-        return sumScore() >= 21;
+    public boolean isFinished() {
+        return state instanceof Finished;
     }
 
     public int sumScore() {
-        int sum = 0, aceCount = 0;
-        for (Card card : cardList) {
-            sum += card.getScore();
-            if(card.isAce()) aceCount++;
-        }
-        while (aceCount > 0 && (sum + 10 <= 21)) {
-            sum += 10;
-            aceCount--;
-        }
-        return sum;
+        return state.sumScore();
     }
 
     @Override
@@ -62,11 +36,11 @@ public abstract class Gamer {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Gamer gamer = (Gamer) object;
-        return Double.compare(betAmount, gamer.betAmount) == 0 && Objects.equals(cardList, gamer.cardList);
+        return Double.compare(betAmount, gamer.betAmount) == 0 && Objects.equals(state, gamer.state);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(betAmount, cardList);
+        return Objects.hash(betAmount, state);
     }
 }

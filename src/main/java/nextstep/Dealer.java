@@ -1,6 +1,5 @@
 package nextstep;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Dealer extends Gamer {
@@ -14,10 +13,8 @@ public class Dealer extends Gamer {
     }
 
     @Override
-    public List<String> printCardInit() {
-        List<String> cardString = new ArrayList<>();
-        cardString.add(cardList.get(0).toString());
-        return cardString;
+    public List<String> getCardNameInit() {
+        return state.getCardNameInit(1);
     }
 
 

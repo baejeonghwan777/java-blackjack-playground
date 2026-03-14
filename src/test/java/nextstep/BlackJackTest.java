@@ -7,25 +7,24 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class BlackJackTest {
-    BlackJack blackJack;
+    Control control;
     Gamers gamers;
-    Cards cards;
+    CardDeck cards;
     Dealer dealer;
     List<Player> playerList;
     List<Gamer> gamerList;
 
     @BeforeEach
     public void setUp() {
-        blackJack = new BlackJack();
+        control = new Control();
         gamers = new Gamers();
-        cards = new Cards();
+        cards = new CardDeck();
         dealer = new Dealer();
         playerList = new ArrayList<>();
         gamerList = new ArrayList<>();
@@ -39,7 +38,6 @@ public class BlackJackTest {
         testList.add(new Player("김길동", 20000));
         testList.add(new Player("배정환", 40000));
 
-        gamers.addDealer();
         gamers.addPlayer("김길동", 20000);
         gamers.addPlayer("배정환", 40000);
         gamerList = gamers.getGamerList();
@@ -57,7 +55,7 @@ public class BlackJackTest {
             }
         }
 
-        Cards cards = new Cards();
+        CardDeck cards = new CardDeck();
         List<Card> cardList = cards.draw(test.size());
         Set<Card> result = new HashSet<>(cardList);
 
@@ -70,8 +68,8 @@ public class BlackJackTest {
         int expected = 2;
 
         Player player = new Player("배정환", 40000);
-        blackJack.drawCard(player, expected);
-        List<String> cardString = player.printCard();
+        control.drawCard(player, expected);
+        List<String> cardString = player.getCardName();
 
         assertThat(cardString.size()).isEqualTo(expected);
     }
@@ -81,8 +79,8 @@ public class BlackJackTest {
     public void drawValidDealerTest() {
         int expected = 2;
 
-        blackJack.drawCard(dealer, expected);
-        List<String> cardString = dealer.printCard();
+        control.drawCard(dealer, expected);
+        List<String> cardString = dealer.getCardName();
 
         assertThat(cardString.size()).isEqualTo(expected);
     }
@@ -92,8 +90,8 @@ public class BlackJackTest {
     public void drawValidDealerPrintTest() {
         int expected = 1;
 
-        blackJack.drawCard(dealer, expected);
-        List<String> cardString = dealer.printCardInit();
+        control.drawCard(dealer, expected);
+        List<String> cardString = dealer.getCardNameInit();
 
         assertThat(cardString.size()).isEqualTo(expected);
     }
@@ -104,7 +102,7 @@ public class BlackJackTest {
     public void extraDrawTest() {
         boolean expected = true;
 
-        blackJack.controlDealer(dealer);
+        control.controlDealer(dealer);
         boolean result = dealer.sumScore() >= 16;
 
         assertThat(result).isEqualTo(expected);
@@ -153,7 +151,7 @@ public class BlackJackTest {
         cardList.add(new Card(Suit.DIAMOND, Rank.ACE));
         player.addCard(cardList);
 
-        List<String> result = player.printCard();
+        List<String> result = player.getCardName();
         expected.add(cardList.get(0).toString());
         expected.add(cardList.get(1).toString());
         expected.add(cardList.get(2).toString());
@@ -161,37 +159,20 @@ public class BlackJackTest {
         assertThat(result).isEqualTo(expected);
     }
 
-    @DisplayName("딜러의 수익이 제대로 정산되었는지 확인한다.")
-    @Test
-    public void dealerAmountTest() {
-        double expected = 10000;
-
-        Player player1 = new Player("배정환", 40000);
-        Player player2 = new Player("apple", 20000);
-        Player player3 = new Player("banana", 70000);
-
-        List<Player> winners = new ArrayList<>();
-        List<Player> losers = new ArrayList<>();
-
-        winners.add(player1);
-        winners.add(player2);
-        losers.add(player3);
-        double result = blackJack.checkAmount(winners, losers);
-
-        assertThat(result).isEqualTo(expected);
-    }
-
     @DisplayName("딜러 점수와 비교하여 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
     @Test
     public void Test() {
-        List<Player> expectedWin = new ArrayList<>();
-        List<Player> expectedPush = new ArrayList<>();
-        List<Player> expectedLose = new ArrayList<>();
+        double expected1 = 40000;
+        double expected2 = 0;
+        double expected3 = -30000;
+        double expectedD = -10000;
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
         cardListD.add(new Card(Suit.SPADE, Rank.NINE));
         cardListD.add(new Card(Suit.SPADE, Rank.SIX));
+        dealer.addCard(cardListD);
+        cardListD.clear();
         cardListD.add(new Card(Suit.DIAMOND, Rank.ACE));
         dealer.addCard(cardListD);
 
@@ -199,49 +180,59 @@ public class BlackJackTest {
         List<Card> cardList1 = new ArrayList<>();
         cardList1.add(new Card(Suit.HEART, Rank.NINE));
         cardList1.add(new Card(Suit.SPADE, Rank.SEVEN));
+        player1.addCard(cardList1); // 2장 뽑아오는 것 구현 뽑아옴으로써 상태가 started -> hit으로 변경됨
+        cardList1.clear();
         cardList1.add(new Card(Suit.CLOVER, Rank.ACE));
         player1.addCard(cardList1);
+        player1.setStay();
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
         cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
         cardList2.add(new Card(Suit.SPADE, Rank.THREE));
+        player2.addCard(cardList2);
+        cardList2.clear();
         cardList2.add(new Card(Suit.HEART, Rank.FIVE));
         player2.addCard(cardList2);
+        player2.setStay();
 
         Player player3 = new Player("banana", 30000);
         List<Card> cardList3 = new ArrayList<>();
         cardList3.add(new Card(Suit.DIAMOND, Rank.TWO));
         cardList3.add(new Card(Suit.CLOVER, Rank.SIX));
+        player3.addCard(cardList3);
+        cardList3.clear();
         cardList3.add(new Card(Suit.DIAMOND, Rank.FIVE));
         player3.addCard(cardList3);
+        player3.setStay();
 
         playerList.add(player1);
         playerList.add(player2);
         playerList.add(player3);
-        expectedWin.add(player1);
-        expectedPush.add(player2);
-        expectedLose.add(player3);
 
-        Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
+        double resultD = control.result(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
-                () -> assertThat(result.getOrDefault("PUSH", List.of())).isEqualTo(expectedPush),
-                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
+                () -> assertThat(expected1).isEqualTo(player1.getProfit(dealer)),
+                () -> assertThat(expected2).isEqualTo(player2.getProfit(dealer)),
+                () -> assertThat(expected3).isEqualTo(player3.getProfit(dealer)),
+                () -> assertThat(expectedD).isEqualTo(resultD)
         );
     }
 
     @DisplayName("버스트가 발생한 경우 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
     @Test
     public void burstWinTest() {
-        List<Player> expectedWin = new ArrayList<>();
-        List<Player> expectedLose = new ArrayList<>();
+        double expected1 = 40000;
+        double expected2 = -20000;
+        double expectedD = -20000;
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
         cardListD.add(new Card(Suit.SPADE, Rank.NINE));
         cardListD.add(new Card(Suit.SPADE, Rank.SIX));
+        dealer.addCard(cardListD);
+        cardListD.clear();
         cardListD.add(new Card(Suit.DIAMOND, Rank.ACE));
         dealer.addCard(cardListD);
 
@@ -249,39 +240,46 @@ public class BlackJackTest {
         List<Card> cardList1 = new ArrayList<>();
         cardList1.add(new Card(Suit.HEART, Rank.NINE));
         cardList1.add(new Card(Suit.SPADE, Rank.SEVEN));
+        player1.addCard(cardList1);
+        cardList1.clear();
         cardList1.add(new Card(Suit.CLOVER, Rank.ACE));
         player1.addCard(cardList1);
+        player1.setStay();
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
         cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
         cardList2.add(new Card(Suit.SPADE, Rank.QUEEN));
+        player2.addCard(cardList2);
+        cardList2.clear();
         cardList2.add(new Card(Suit.HEART, Rank.KING));
         player2.addCard(cardList2);
 
         playerList.add(player1);
         playerList.add(player2);
-        expectedWin.add(player1);
-        expectedLose.add(player2);
 
-        Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
+        double resultD = control.result(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
-                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
+                () -> assertThat(expected1).isEqualTo(player1.getProfit(dealer)),
+                () -> assertThat(expected2).isEqualTo(player2.getProfit(dealer)),
+                () -> assertThat(expectedD).isEqualTo(resultD)
         );
     }
 
     @DisplayName("모든 플레이어가 버스트가 발생한 경우 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
     @Test
     public void burstLoseTest() {
-        List<Player> expectedWin = new ArrayList<>();
-        List<Player> expectedLose = new ArrayList<>();
+        double expected1 = -40000;
+        double expected2 = -20000;
+        double expectedD = 60000;
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
         cardListD.add(new Card(Suit.SPADE, Rank.NINE));
         cardListD.add(new Card(Suit.SPADE, Rank.TEN));
+        dealer.addCard(cardListD);
+        cardListD.clear();
         cardListD.add(new Card(Suit.DIAMOND, Rank.QUEEN));
         dealer.addCard(cardListD);
 
@@ -289,6 +287,8 @@ public class BlackJackTest {
         List<Card> cardList1 = new ArrayList<>();
         cardList1.add(new Card(Suit.HEART, Rank.NINE));
         cardList1.add(new Card(Suit.SPADE, Rank.JACK));
+        player1.addCard(cardList1);
+        cardList1.clear();
         cardList1.add(new Card(Suit.CLOVER, Rank.TEN));
         player1.addCard(cardList1);
 
@@ -296,32 +296,36 @@ public class BlackJackTest {
         List<Card> cardList2 = new ArrayList<>();
         cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
         cardList2.add(new Card(Suit.SPADE, Rank.QUEEN));
+        player2.addCard(cardList2);
+        cardList2.clear();
         cardList2.add(new Card(Suit.HEART, Rank.KING));
         player2.addCard(cardList2);
 
         playerList.add(player1);
         playerList.add(player2);
-        expectedLose.add(player1);
-        expectedLose.add(player2);
 
-        Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
+        double resultD = control.result(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
-                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
+                () -> assertThat(expected1).isEqualTo(player1.getProfit(dealer)),
+                () -> assertThat(expected2).isEqualTo(player2.getProfit(dealer)),
+                () -> assertThat(expectedD).isEqualTo(resultD)
         );
     }
 
     @DisplayName("블랙잭이 발생한 경우 플레이어의 승패 여부가 제대로 판별되는지 확인한다.")
     @Test
     public void blackJackWinTest() {
-        List<Player> expectedWin = new ArrayList<>();
-        List<Player> expectedLose = new ArrayList<>();
+        double expected1 = 60000;
+        double expected2 = -20000;
+        double expectedD = -40000;
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
         cardListD.add(new Card(Suit.SPADE, Rank.TEN));
         cardListD.add(new Card(Suit.SPADE, Rank.FOUR));
+        dealer.addCard(cardListD);
+        cardListD.clear();
         cardListD.add(new Card(Suit.DIAMOND, Rank.SEVEN));
         dealer.addCard(cardListD);
 
@@ -335,35 +339,21 @@ public class BlackJackTest {
         List<Card> cardList2 = new ArrayList<>();
         cardList2.add(new Card(Suit.CLOVER, Rank.SIX));
         cardList2.add(new Card(Suit.CLOVER, Rank.TWO));
+        player2.addCard(cardList2);
+        cardList2.clear();
         cardList2.add(new Card(Suit.HEART, Rank.THREE));
         player2.addCard(cardList2);
+        player2.setStay();
 
         playerList.add(player1);
         playerList.add(player2);
-        expectedWin.add(player1);
-        expectedLose.add(player2);
 
-        Map<String, List<Player>> result = blackJack.checkWinner(playerList, dealer);
+        double resultD = control.result(playerList, dealer);
 
         assertAll(
-                () -> assertThat(result.getOrDefault("WIN", List.of())).isEqualTo(expectedWin),
-                () -> assertThat(result.getOrDefault("LOSE", List.of())).isEqualTo(expectedLose)
+                () -> assertThat(expected1).isEqualTo(player1.getProfit(dealer)),
+                () -> assertThat(expected2).isEqualTo(player2.getProfit(dealer)),
+                () -> assertThat(expectedD).isEqualTo(resultD)
         );
-    }
-
-    @DisplayName("블랙잭이 발생한 경우 배팅 금액이 1.5배가 되는지 확인한다.")
-    @Test
-    public void checkBlackJack() {
-        double expected = 60000;
-
-        Player player = new Player("배정환", 40000);
-        List<Card> cardList = new ArrayList<>();
-        cardList.add(new Card(Suit.SPADE, Rank.ACE));
-        cardList.add(new Card(Suit.CLOVER, Rank.TEN));
-        player.addCard(cardList);
-        player.checkBlackJack();
-        double result = player.getAmount();
-
-        assertThat(expected).isEqualTo(result);
     }
 }

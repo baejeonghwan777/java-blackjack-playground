@@ -1,7 +1,7 @@
 package nextstep;
 
-public class BlackJack extends Finished {
-    public BlackJack(Cards cards) {
+public class Bust extends Finished {
+    public Bust(Cards cards) {
         super(cards);
     }
 
@@ -12,6 +12,6 @@ public class BlackJack extends Finished {
 
     @Override
     public double earningRate() {
-        return 1.5;
+        return -1;
     }
 }

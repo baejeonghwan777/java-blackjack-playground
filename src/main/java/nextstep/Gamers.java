@@ -9,7 +9,7 @@ public class Gamers {
     private List<Player> playerList = new ArrayList<>();
     private final Dealer dealer = new Dealer();
 
-    public void addDealer() {
+    public Gamers() {
         gamerList.add(dealer);
     }
 
