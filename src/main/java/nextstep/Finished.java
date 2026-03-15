@@ -7,7 +7,7 @@ public class Finished extends Started {
 
     @Override
     public State stay() {
-        return super.stay();
+        throw new IllegalArgumentException("프로그램 종료 상태에서 Stay를 외칠 수 없습니다.");
     }
 
     @Override

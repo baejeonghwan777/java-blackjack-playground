@@ -21,7 +21,7 @@ public class Started implements State {
 
     @Override
     public State stay() {
-        return null;
+        throw new IllegalArgumentException("프로그램 시작 상태에서 Stay를 외칠 수 없습니다.");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Started implements State {
 
     @Override
     public double profit(double betAmount, Dealer dealer) {
-        return 0;
+        throw new IllegalArgumentException("프로그램 시작 상태에서 계산은 불가능합니다.");
     }
 
     @Override
