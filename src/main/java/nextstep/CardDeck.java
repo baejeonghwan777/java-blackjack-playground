@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardDeck {
-    List<Card> cardList;
+    private final List<Card> cardList;
 
     public CardDeck() {
         cardList = new ArrayList<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
-                cardList.add(new Card(suit, rank));
+                cardList.add(Card.of(suit, rank));
             }
         }
         Collections.shuffle(cardList);

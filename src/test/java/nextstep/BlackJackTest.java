@@ -51,7 +51,7 @@ public class BlackJackTest {
         Set<Card> test = new HashSet<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
-                test.add(new Card(suit, rank));
+                test.add(Card.of(suit, rank));
             }
         }
 
@@ -115,8 +115,8 @@ public class BlackJackTest {
 
         Player player = new Player("배정환", 40000);
         List<Card> cardList = new ArrayList<>();
-        cardList.add(new Card(Suit.SPADE, Rank.QUEEN));
-        cardList.add(new Card(Suit.DIAMOND, Rank.ACE));
+        cardList.add(Card.of(Suit.SPADE, Rank.QUEEN));
+        cardList.add(Card.of(Suit.DIAMOND, Rank.ACE));
         player.addCard(cardList);
         int result = player.sumScore();
 
@@ -130,9 +130,9 @@ public class BlackJackTest {
 
         Player player = new Player("배정환", 40000);
         List<Card> cardList = new ArrayList<>();
-        cardList.add(new Card(Suit.SPADE, Rank.NINE));
-        cardList.add(new Card(Suit.SPADE, Rank.SIX));
-        cardList.add(new Card(Suit.DIAMOND, Rank.ACE));
+        cardList.add(Card.of(Suit.SPADE, Rank.NINE));
+        cardList.add(Card.of(Suit.SPADE, Rank.SIX));
+        cardList.add(Card.of(Suit.DIAMOND, Rank.ACE));
         player.addCard(cardList);
         int result = player.sumScore();
 
@@ -146,9 +146,9 @@ public class BlackJackTest {
 
         Player player = new Player("배정환", 40000);
         List<Card> cardList = new ArrayList<>();
-        cardList.add(new Card(Suit.SPADE, Rank.NINE));
-        cardList.add(new Card(Suit.SPADE, Rank.SIX));
-        cardList.add(new Card(Suit.DIAMOND, Rank.ACE));
+        cardList.add(Card.of(Suit.SPADE, Rank.NINE));
+        cardList.add(Card.of(Suit.SPADE, Rank.SIX));
+        cardList.add(Card.of(Suit.DIAMOND, Rank.ACE));
         player.addCard(cardList);
 
         List<String> result = player.getCardName();
@@ -169,40 +169,40 @@ public class BlackJackTest {
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
-        cardListD.add(new Card(Suit.SPADE, Rank.NINE));
-        cardListD.add(new Card(Suit.SPADE, Rank.SIX));
+        cardListD.add(Card.of(Suit.SPADE, Rank.NINE));
+        cardListD.add(Card.of(Suit.SPADE, Rank.SIX));
         dealer.addCard(cardListD);
         cardListD.clear();
-        cardListD.add(new Card(Suit.DIAMOND, Rank.ACE));
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.ACE));
         dealer.addCard(cardListD);
 
         Player player1 = new Player("배정환", 40000);
         List<Card> cardList1 = new ArrayList<>();
-        cardList1.add(new Card(Suit.HEART, Rank.NINE));
-        cardList1.add(new Card(Suit.SPADE, Rank.SEVEN));
+        cardList1.add(Card.of(Suit.HEART, Rank.NINE));
+        cardList1.add(Card.of(Suit.SPADE, Rank.SEVEN));
         player1.addCard(cardList1); // 2장 뽑아오는 것 구현 뽑아옴으로써 상태가 started -> hit으로 변경됨
         cardList1.clear();
-        cardList1.add(new Card(Suit.CLOVER, Rank.ACE));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.ACE));
         player1.addCard(cardList1);
         player1.setStay();
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
-        cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
-        cardList2.add(new Card(Suit.SPADE, Rank.THREE));
+        cardList2.add(Card.of(Suit.SPADE, Rank.EIGHT));
+        cardList2.add(Card.of(Suit.SPADE, Rank.THREE));
         player2.addCard(cardList2);
         cardList2.clear();
-        cardList2.add(new Card(Suit.HEART, Rank.FIVE));
+        cardList2.add(Card.of(Suit.HEART, Rank.FIVE));
         player2.addCard(cardList2);
         player2.setStay();
 
         Player player3 = new Player("banana", 30000);
         List<Card> cardList3 = new ArrayList<>();
-        cardList3.add(new Card(Suit.DIAMOND, Rank.TWO));
-        cardList3.add(new Card(Suit.CLOVER, Rank.SIX));
+        cardList3.add(Card.of(Suit.DIAMOND, Rank.TWO));
+        cardList3.add(Card.of(Suit.CLOVER, Rank.SIX));
         player3.addCard(cardList3);
         cardList3.clear();
-        cardList3.add(new Card(Suit.DIAMOND, Rank.FIVE));
+        cardList3.add(Card.of(Suit.DIAMOND, Rank.FIVE));
         player3.addCard(cardList3);
         player3.setStay();
 
@@ -229,30 +229,30 @@ public class BlackJackTest {
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
-        cardListD.add(new Card(Suit.SPADE, Rank.NINE));
-        cardListD.add(new Card(Suit.SPADE, Rank.SIX));
+        cardListD.add(Card.of(Suit.SPADE, Rank.NINE));
+        cardListD.add(Card.of(Suit.SPADE, Rank.SIX));
         dealer.addCard(cardListD);
         cardListD.clear();
-        cardListD.add(new Card(Suit.DIAMOND, Rank.ACE));
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.ACE));
         dealer.addCard(cardListD);
 
         Player player1 = new Player("배정환", 40000);
         List<Card> cardList1 = new ArrayList<>();
-        cardList1.add(new Card(Suit.HEART, Rank.NINE));
-        cardList1.add(new Card(Suit.SPADE, Rank.SEVEN));
+        cardList1.add(Card.of(Suit.HEART, Rank.NINE));
+        cardList1.add(Card.of(Suit.SPADE, Rank.SEVEN));
         player1.addCard(cardList1);
         cardList1.clear();
-        cardList1.add(new Card(Suit.CLOVER, Rank.ACE));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.ACE));
         player1.addCard(cardList1);
         player1.setStay();
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
-        cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
-        cardList2.add(new Card(Suit.SPADE, Rank.QUEEN));
+        cardList2.add(Card.of(Suit.SPADE, Rank.EIGHT));
+        cardList2.add(Card.of(Suit.SPADE, Rank.QUEEN));
         player2.addCard(cardList2);
         cardList2.clear();
-        cardList2.add(new Card(Suit.HEART, Rank.KING));
+        cardList2.add(Card.of(Suit.HEART, Rank.KING));
         player2.addCard(cardList2);
 
         playerList.add(player1);
@@ -276,29 +276,29 @@ public class BlackJackTest {
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
-        cardListD.add(new Card(Suit.SPADE, Rank.NINE));
-        cardListD.add(new Card(Suit.SPADE, Rank.TEN));
+        cardListD.add(Card.of(Suit.SPADE, Rank.NINE));
+        cardListD.add(Card.of(Suit.SPADE, Rank.TEN));
         dealer.addCard(cardListD);
         cardListD.clear();
-        cardListD.add(new Card(Suit.DIAMOND, Rank.QUEEN));
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.QUEEN));
         dealer.addCard(cardListD);
 
         Player player1 = new Player("배정환", 40000);
         List<Card> cardList1 = new ArrayList<>();
-        cardList1.add(new Card(Suit.HEART, Rank.NINE));
-        cardList1.add(new Card(Suit.SPADE, Rank.JACK));
+        cardList1.add(Card.of(Suit.HEART, Rank.NINE));
+        cardList1.add(Card.of(Suit.SPADE, Rank.JACK));
         player1.addCard(cardList1);
         cardList1.clear();
-        cardList1.add(new Card(Suit.CLOVER, Rank.TEN));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.TEN));
         player1.addCard(cardList1);
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
-        cardList2.add(new Card(Suit.SPADE, Rank.EIGHT));
-        cardList2.add(new Card(Suit.SPADE, Rank.QUEEN));
+        cardList2.add(Card.of(Suit.SPADE, Rank.EIGHT));
+        cardList2.add(Card.of(Suit.SPADE, Rank.QUEEN));
         player2.addCard(cardList2);
         cardList2.clear();
-        cardList2.add(new Card(Suit.HEART, Rank.KING));
+        cardList2.add(Card.of(Suit.HEART, Rank.KING));
         player2.addCard(cardList2);
 
         playerList.add(player1);
@@ -322,26 +322,26 @@ public class BlackJackTest {
 
         Dealer dealer = new Dealer();
         List<Card> cardListD = new ArrayList<>();
-        cardListD.add(new Card(Suit.SPADE, Rank.TEN));
-        cardListD.add(new Card(Suit.SPADE, Rank.FOUR));
+        cardListD.add(Card.of(Suit.SPADE, Rank.TEN));
+        cardListD.add(Card.of(Suit.SPADE, Rank.FOUR));
         dealer.addCard(cardListD);
         cardListD.clear();
-        cardListD.add(new Card(Suit.DIAMOND, Rank.SEVEN));
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.SEVEN));
         dealer.addCard(cardListD);
 
         Player player1 = new Player("배정환", 40000);
         List<Card> cardList1 = new ArrayList<>();
-        cardList1.add(new Card(Suit.HEART, Rank.QUEEN));
-        cardList1.add(new Card(Suit.SPADE, Rank.ACE));
+        cardList1.add(Card.of(Suit.HEART, Rank.QUEEN));
+        cardList1.add(Card.of(Suit.SPADE, Rank.ACE));
         player1.addCard(cardList1);
 
         Player player2 = new Player("apple", 20000);
         List<Card> cardList2 = new ArrayList<>();
-        cardList2.add(new Card(Suit.CLOVER, Rank.SIX));
-        cardList2.add(new Card(Suit.CLOVER, Rank.TWO));
+        cardList2.add(Card.of(Suit.CLOVER, Rank.SIX));
+        cardList2.add(Card.of(Suit.CLOVER, Rank.TWO));
         player2.addCard(cardList2);
         cardList2.clear();
-        cardList2.add(new Card(Suit.HEART, Rank.THREE));
+        cardList2.add(Card.of(Suit.HEART, Rank.THREE));
         player2.addCard(cardList2);
         player2.setStay();
 

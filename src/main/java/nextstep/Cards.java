@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Cards {
-    protected List<Card> cardList = new ArrayList<>();
+    private final List<Card> cardList = new ArrayList<>();
 
     public List<String> getCardString() {
         List<String> cardString = new ArrayList<>();

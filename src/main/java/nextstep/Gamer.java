@@ -20,11 +20,11 @@ public abstract class Gamer {
     }
 
     public boolean isBust() {
-        return state instanceof Bust;
+        return state.isBust();
     }
 
     public boolean isFinished() {
-        return state instanceof Finished;
+        return state.isFinished();
     }
 
     public int sumScore() {

@@ -5,7 +5,7 @@ import java.util.List;
 public class Player extends Gamer {
     private final String name;
 
-    public Player(String name, int betAmount) { // 유효성 검사 필요
+    public Player(String name, int betAmount) {
         this.name = name;
         if(betAmount >= 0) this.betAmount = betAmount;
         if(betAmount < 0) this.betAmount = 0;

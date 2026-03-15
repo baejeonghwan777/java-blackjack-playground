@@ -30,6 +30,16 @@ public class Started implements State {
     }
 
     @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isBust() {
+        return false;
+    }
+
+    @Override
     public double profit(double betAmount, Dealer dealer) {
         throw new IllegalArgumentException("프로그램 시작 상태에서 계산은 불가능합니다.");
     }

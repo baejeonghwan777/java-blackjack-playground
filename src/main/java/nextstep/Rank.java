@@ -15,8 +15,8 @@ public enum Rank {
     QUEEN(10, "Q"),
     KING(10, "K");
 
-    public final int score;
-    public final String identification;
+    private final int score;
+    private final String identification;
 
     Rank(final int score, final String identification) {
         this.score = score;

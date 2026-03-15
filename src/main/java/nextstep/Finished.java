@@ -11,18 +11,8 @@ public class Finished extends Started {
     }
 
     @Override
-    public Cards cards() {
-        return super.cards();
-    }
-
-    @Override
-    public int sumScore() {
-        return super.sumScore();
-    }
-
-    @Override
-    public double profit(double betAmount, Dealer dealer) {
-        return super.profit(betAmount, dealer);
+    public boolean isFinished() {
+        return true;
     }
 
     public double earningRate() {
