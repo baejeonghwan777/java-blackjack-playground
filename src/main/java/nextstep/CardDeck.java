@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardDeck {
-    private final List<Card> cardList;
+    private final List<Card> cardList = new ArrayList<>();;
 
     public CardDeck() {
-        cardList = new ArrayList<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 cardList.add(Card.of(suit, rank));
