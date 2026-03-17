@@ -92,6 +92,6 @@ public class Control {
             drawCard(player, 1);
             viewCard(player);
         }
-        player.setStay();
+        if (!player.isFinished()) player.setStay();
     }
 }

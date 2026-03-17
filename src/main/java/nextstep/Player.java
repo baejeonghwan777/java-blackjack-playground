@@ -7,8 +7,8 @@ public class Player extends Gamer {
 
     public Player(String name, int betAmount) {
         this.name = name;
-        if(betAmount >= 0) this.betAmount = betAmount;
-        if(betAmount < 0) this.betAmount = 0;
+        if(betAmount > 1) this.betAmount = betAmount;
+        if(betAmount <= 1) this.betAmount = 1;
     }
 
     public double getProfit(Dealer dealer) {

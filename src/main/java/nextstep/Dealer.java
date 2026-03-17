@@ -16,6 +16,4 @@ public class Dealer extends Gamer {
     public List<String> getCardNameInit() {
         return state.getCardNameInit(1);
     }
-
-
 }

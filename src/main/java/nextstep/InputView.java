@@ -30,7 +30,7 @@ public class InputView {
                 System.out.println("올바른 숫자를 입력하세요.");
                 scanner.nextLine();
             }
-        } while (money < 0);
+        } while (money <= 0);
         return money;
     }
 

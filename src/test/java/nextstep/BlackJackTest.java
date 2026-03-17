@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -43,6 +44,16 @@ public class BlackJackTest {
         gamerList = gamers.getGamerList();
 
         assertThat(testList).isEqualTo(gamerList);
+    }
+
+    @DisplayName("1원 미만의 돈이 입력되었다면, 1원이 들어가는지 확인한다.")
+    @Test
+    public void validMoneyTest() {
+        Player expected = new Player("배정환", -100);
+
+        Player result = new Player("배정환", 1);
+
+        assertThat(expected).isEqualTo(result);
     }
 
     @DisplayName("드로우로 뽑힌 모든 카드의 경우가 겹치지 않는지 확인한다.")
@@ -81,6 +92,18 @@ public class BlackJackTest {
 
         control.drawCard(dealer, expected);
         List<String> cardString = dealer.getCardName();
+
+        assertThat(cardString.size()).isEqualTo(expected);
+    }
+
+    @DisplayName("플레아어가 첫 턴에 두장의 카드를 뽑았을 때 두 카드 모두 출력되는지 확인한다.")
+    @Test
+    public void drawValidPlayerPrintTest() {
+        int expected = 2;
+
+        Player player = new Player("배정환", 40000);
+        control.drawCard(player, expected);
+        List<String> cardString = player.getCardNameInit();
 
         assertThat(cardString.size()).isEqualTo(expected);
     }
@@ -355,5 +378,166 @@ public class BlackJackTest {
                 () -> assertThat(expected2).isEqualTo(player2.getProfit(dealer)),
                 () -> assertThat(expectedD).isEqualTo(resultD)
         );
+    }
+
+    @DisplayName("Bust 상태에서 setStay 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void bustStayTest() {
+        Player player1 = new Player("배정환", 40000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.HEART, Rank.NINE));
+        cardList1.add(Card.of(Suit.SPADE, Rank.JACK));
+        player1.addCard(cardList1);
+        cardList1.clear();
+        cardList1.add(Card.of(Suit.CLOVER, Rank.TEN));
+        player1.addCard(cardList1);
+
+        assertThatThrownBy(player1::setStay).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 종료 상태에서 Stay를 외칠 수 없습니다.");
+    }
+
+    @DisplayName("BlackJack 상태에서 setStay 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void blackJackStayTest() {
+        Player player1 = new Player("배정환", 40000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.HEART, Rank.QUEEN));
+        cardList1.add(Card.of(Suit.SPADE, Rank.ACE));
+        player1.addCard(cardList1);
+
+        assertThatThrownBy(player1::setStay).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 종료 상태에서 Stay를 외칠 수 없습니다.");
+    }
+
+    @DisplayName("Stay 상태에서 setStay 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void invalidStayTest() {
+        Player player1 = new Player("apple", 20000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.CLOVER, Rank.SIX));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.TWO));
+        player1.addCard(cardList1);
+        player1.setStay();
+
+        assertThatThrownBy(player1::setStay).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 종료 상태에서 Stay를 외칠 수 없습니다.");
+    }
+
+    @DisplayName("Started 상태에서 setStay 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void startedStayTest() {
+        Player player1 = new Player("배정환", 40000);
+
+        assertThatThrownBy(player1::setStay).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 시작 상태에서 Stay를 외칠 수 없습니다.");
+    }
+
+    @DisplayName("Hit 상태에서 setStay 호출 시 Stay가 되는지 확인한다.")
+    @Test
+    public void hitStayTest() {
+        boolean expected = true;
+
+        Player player1 = new Player("apple", 20000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.CLOVER, Rank.SIX));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.TWO));
+        player1.addCard(cardList1);
+        player1.setStay();
+        boolean result = player1.isFinished();
+
+        assertThat(expected).isEqualTo(result);
+    }
+
+    @DisplayName("Started 상태에서 profit 계산 함수 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void startedProfitTest() {
+        Player player1 = new Player("배정환", 40000);
+
+        assertThatThrownBy(() ->
+                player1.getProfit(dealer)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 시작 상태에서 계산은 불가능합니다.");
+    }
+
+    @DisplayName("Hit 상태에서 profit 계산 함수 호출 시 오류가 뜨는지 확인한다.")
+    @Test
+    public void hitProfitTest() {
+        Player player1 = new Player("apple", 20000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.CLOVER, Rank.SIX));
+        cardList1.add(Card.of(Suit.CLOVER, Rank.TWO));
+        player1.addCard(cardList1);
+
+        assertThatThrownBy(() ->
+                player1.getProfit(dealer)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("프로그램 실행 상태에서 계산은 불가능합니다.");
+    }
+
+    @DisplayName("Stay, Bust, BlackJack 상태가 각각 Finished 상태로 인식되는지 확인한다.")
+    @Test
+    public void finishedTest() {
+        boolean expected1 = true;
+        boolean expected2 = true;
+        boolean expectedD = true;
+
+        Dealer dealer = new Dealer();
+        List<Card> cardListD = new ArrayList<>();
+        cardListD.add(Card.of(Suit.SPADE, Rank.TEN));
+        cardListD.add(Card.of(Suit.SPADE, Rank.QUEEN));
+        dealer.addCard(cardListD);
+        cardListD.clear();
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.SEVEN));
+        dealer.addCard(cardListD);
+
+        Player player1 = new Player("배정환", 40000);
+        List<Card> cardList1 = new ArrayList<>();
+        cardList1.add(Card.of(Suit.HEART, Rank.QUEEN));
+        cardList1.add(Card.of(Suit.SPADE, Rank.ACE));
+        player1.addCard(cardList1);
+
+        Player player2 = new Player("apple", 20000);
+        List<Card> cardList2 = new ArrayList<>();
+        cardList2.add(Card.of(Suit.CLOVER, Rank.SIX));
+        cardList2.add(Card.of(Suit.CLOVER, Rank.TWO));
+        player2.addCard(cardList2);
+        cardList2.clear();
+        cardList2.add(Card.of(Suit.HEART, Rank.THREE));
+        player2.addCard(cardList2);
+        player2.setStay();
+
+        assertAll(
+                () -> assertThat(expected1).isEqualTo(player1.isFinished()),
+                () -> assertThat(expected2).isEqualTo(player2.isFinished()),
+                () -> assertThat(expectedD).isEqualTo(dealer.isFinished())
+        );
+    }
+
+    @DisplayName("Bust 상태가 isBust()에 의해 true로 인식되는지 확인한다.")
+    @Test
+    public void finishedChildTest() {
+        boolean expectedD = true;
+
+        Dealer dealer = new Dealer();
+        List<Card> cardListD = new ArrayList<>();
+        cardListD.add(Card.of(Suit.SPADE, Rank.TEN));
+        cardListD.add(Card.of(Suit.SPADE, Rank.QUEEN));
+        dealer.addCard(cardListD);
+        cardListD.clear();
+        cardListD.add(Card.of(Suit.DIAMOND, Rank.SEVEN));
+        dealer.addCard(cardListD);
+
+        assertThat(expectedD).isEqualTo(dealer.isBust());
+    }
+
+    @DisplayName("카드 글자가 잘 출력되는지 확인한다.")
+    @Test
+    public void cardStringTest() {
+        String expected = "스페이드Q";
+
+        Card card = Card.of(Suit.SPADE, Rank.QUEEN);
+        String result = card.toString();
+
+        assertThat(expected).isEqualTo(result);
     }
 }

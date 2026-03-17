@@ -12,9 +12,4 @@ public class Stay extends Finished {
         if(cards.sumScore() < dealer.sumScore()) return -betAmount;
         return 0;
     }
-
-    @Override
-    public double earningRate() {
-        return super.earningRate();
-    }
 }

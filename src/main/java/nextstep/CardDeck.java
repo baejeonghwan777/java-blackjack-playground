@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardDeck {
-    private final List<Card> cardList = new ArrayList<>();;
+    private final List<Card> cardList = new ArrayList<>();
 
     public CardDeck() {
         for (Suit suit : Suit.values()) {
